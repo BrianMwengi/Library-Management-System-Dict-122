@@ -17,5 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $stmt->close();
     $conn->close();
+} else {
+    echo "This script only handles POST requests.";
 }
-?>
