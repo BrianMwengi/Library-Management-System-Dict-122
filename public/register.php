@@ -1,4 +1,5 @@
 <?php
+// Start session
 session_start();
 ?>
 
@@ -11,7 +12,8 @@ session_start();
 <body class="centered">
     <div class="form-container">
         <h2>Register</h2>
-        <form id="registerForm" method="POST" action="register.php">
+        <!-- Registration form -->
+        <form method="POST" action="register.php">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required><br>
             <label for="email">Email:</label>
@@ -20,7 +22,8 @@ session_start();
             <input type="password" id="password" name="password" required><br>
             <button type="submit">Register</button>
         </form>
-        <div id="registerMessage">
+        <div>
+            <!-- Display registration message if set in session -->
             <?php
             if (isset($_SESSION['message'])) {
                 echo $_SESSION['message'];
@@ -33,33 +36,43 @@ session_start();
 </html>
 
 <?php
+// Include database configuration file
 require_once '../config/db.php';
 
+// Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Start session if not already started
     if (session_status() == PHP_SESSION_NONE) {
         session_start();
     }
 
+    // Get form data and hash the password
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
+    // Prepare SQL statement to insert new user
     $stmt = $conn->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $name, $email, $password);
 
+    // Execute statement and set session message based on success or failure
     if ($stmt->execute()) {
-        $_SESSION['user_id'] = $stmt->insert_id; // Store the new user ID in session
+        // Store the new user ID in session
+        $_SESSION['user_id'] = $stmt->insert_id;
         $_SESSION['message'] = "Registration successful!";
+        // Redirect to add_book.php page
         header("Location: add_book.php");
         exit();
     } else {
+        // Set error message
         $_SESSION['message'] = "Error: " . $stmt->error;
+        // Redirect back to register.php page
         header("Location: register.php");
         exit();
     }
 
+    // Close statement and database connection
     $stmt->close();
     $conn->close();
 }
 ?>
-

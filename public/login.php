@@ -1,4 +1,5 @@
 <?php
+// Start session
 session_start();
 ?>
 
@@ -11,7 +12,8 @@ session_start();
 <body class="centered">
     <div class="form-container">
         <h2>Login</h2>
-        <form id="loginForm" method="POST" action="process_login.php">
+        <!-- Login form -->
+        <form method="POST" action="process_login.php">
             <label for="loginEmail">Email:</label>
             <input type="email" id="loginEmail" name="email" required><br>
             <label for="loginPassword">Password:</label>
@@ -19,6 +21,7 @@ session_start();
             <button type="submit">Login</button>
         </form>
         <div id="loginMessage">
+            <!-- Display login message if set in session -->
             <?php
             if (isset($_SESSION['message'])) {
                 echo $_SESSION['message'];
