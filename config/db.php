@@ -15,9 +15,8 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
-
 function create_tables($conn) {
     // SQL to create tables
     $sql = "
@@ -33,7 +32,8 @@ function create_tables($conn) {
         title VARCHAR(255) NOT NULL,
         author VARCHAR(255) NOT NULL,
         isbn VARCHAR(13) NOT NULL UNIQUE,
-        available BOOLEAN DEFAULT TRUE
+        publication_year INT NOT NULL,
+        available_copies INT NOT NULL DEFAULT 1
     );
 
     CREATE TABLE IF NOT EXISTS borrowed_books (
@@ -42,6 +42,7 @@ function create_tables($conn) {
         book_id INT NOT NULL,
         borrowed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         returned_at TIMESTAMP NULL,
+        due_date DATE NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users(id),
         FOREIGN KEY (book_id) REFERENCES books(id)
     );
@@ -62,8 +63,3 @@ function create_tables($conn) {
         $conn->close();
     }
 }
-?>
-
-
-
-
